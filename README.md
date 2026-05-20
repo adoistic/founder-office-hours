@@ -2,7 +2,7 @@
 
 An Agent Skill for Claude. Office hours methodology for a non-technical founder paired with a technical co-founder, building a tech startup in the AI-native era of 2026.
 
-**📦 [Download the latest skill bundle (.zip)](https://github.com/adoistic/non-tech-office-hours/releases/latest/download/non-tech-office-hours.zip)** — unzip into `~/.claude/skills/` (Claude Code / Desktop) or upload the `.md` files to a Project (Claude.ai web).
+**📦 [Download the latest skill bundle (.zip)](https://github.com/adoistic/non-tech-office-hours/releases/latest/download/non-tech-office-hours.zip)** — see installation below. On claude.ai web, upload the zip as-is via Customize → Skills. On Claude Code or any other coding agent, ask the agent to install it from the link.
 
 Pushes hard on specificity, behavioral evidence, and strategic coherence (Roger Martin's Playing-to-Win framework). Calibrates to AI-native production economics (software factories, token-maxing, closed-loop ops). Refuses to drift into technology choices — those belong to the technical co-founder, in their own session.
 
@@ -26,37 +26,36 @@ Two markdown artifacts, created in the conversation and downloadable as `.md` fi
 
 ## Installation
 
-### Claude Code (CLI / desktop)
-
-Copy the entire `non-tech-office-hours/` directory into your skills folder:
-
-```sh
-cp -r non-tech-office-hours ~/.claude/skills/
-```
-
-Then invoke from any Claude Code session:
-
-```
-/non-tech-office-hours
-```
-
-Or just describe your situation — Claude will auto-load the skill when the description in `SKILL.md`'s frontmatter matches what you're doing.
-
 ### Claude.ai (web app)
 
-Two ways:
+1. Download the [skill zip](https://github.com/adoistic/non-tech-office-hours/releases/latest/download/non-tech-office-hours.zip).
+2. In claude.ai, open **Customize → Skills** (Customize is in your settings / sidebar).
+3. Click the **+** button at the top of the Skills panel.
+4. Choose **Create skill → Upload a skill**.
+5. **Upload the zip file as-is — do not unzip it.** Claude.ai unpacks it for you.
+6. Start a new chat and trigger the skill by saying something like: *"Run office hours on what I'm building. Start by reading SKILL.md."*
 
-**As a Project.** Create a new Project in Claude.ai. Upload all the markdown files in `non-tech-office-hours/` to the project. Open a chat in the project and say:
+### Claude Code, Codex, Cursor, or any other coding agent
 
-> Run office hours on this idea. Start by reading `SKILL.md`.
+Easiest path: tell the agent to install it for you. Paste this link and say *"install this skill for me"*:
 
-The project files load automatically into every chat in that project. Claude will read SKILL.md first, then the supporting files as instructed.
+```
+https://github.com/adoistic/non-tech-office-hours/releases/latest/download/non-tech-office-hours.zip
+```
 
-**Ad hoc upload.** Attach all the `.md` files to a new conversation and tell Claude to start by reading `SKILL.md`. Works the same way; you just lose project-scoped persistence.
+The agent will download, unzip, and place the skill in the right directory for whichever environment you're in. Works on Claude Code, Codex CLI, Cursor, and any other coding agent that handles file operations.
 
-### Claude Desktop
+### Manual install (Claude Code / Claude Desktop)
 
-If you have Claude Desktop with skills installed, drop the `non-tech-office-hours/` folder into your skills directory. Format and behavior are identical to Claude Code.
+If you'd rather do it by hand:
+
+```sh
+curl -L https://github.com/adoistic/non-tech-office-hours/releases/latest/download/non-tech-office-hours.zip -o /tmp/skill.zip
+unzip /tmp/skill.zip -d ~/.claude/skills/
+rm /tmp/skill.zip
+```
+
+Then invoke with `/non-tech-office-hours` from any Claude Code session, or just describe the founder's situation — Claude will auto-load the skill when the description in `SKILL.md`'s frontmatter matches.
 
 ## Files
 
