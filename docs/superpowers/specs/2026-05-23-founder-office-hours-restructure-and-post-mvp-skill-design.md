@@ -200,7 +200,7 @@ Skips the investor mirror. `WHAT_INVESTORS_WILL_ASK.md` is **not produced** for 
 
 **Investor mirror (Phase 4-IM).** The partner-meeting rehearsal. Walk through the 10 canonical questions (Section 5.4 below). For each, the founder gives their answer, then receives push-back ("a partner will follow up with..."). Gaps go straight into `WHAT_INVESTORS_WILL_ASK.md`. The skill also pulls the moats-and-network-effects wiki here (only here — PMF-before-moat rule).
 
-### 5.4 The 10 partner-meeting questions (used in Phase 4-IM)
+### Phase 4-IM appendix — The 10 partner-meeting questions
 
 For Claims-PMF and Fundraise-ready routes only.
 
