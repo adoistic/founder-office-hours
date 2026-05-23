@@ -325,14 +325,13 @@ After completing all tasks above, dispatch the plan-document-reviewer with this 
 
 ## Chunk 2: Raw source ingestion (NFX scrape + Helmer transcript intake)
 
-Pull the two canonical sources into the repo. Both land in `non-tech-office-hours/moats-and-network-effects/raw/` (we'll mirror to the post-mvp skill in Chunk 4). This chunk also produces a structured intermediate JSON of the parsed NFX article that the next chunk uses to generate wiki pages.
+Pull the two canonical sources into the repo. Both land in `non-tech-office-hours/moats-and-network-effects/raw/` (we'll mirror to the post-mvp skill in Chunk 4). Output is the raw markdown of both sources; Chunk 3 reads those raw files directly to generate the wiki pages — no intermediate structured form is required at this stage.
 
 ### Task 2.1: Scrape and convert the NFX Network Effects Manual
 
 **Files:**
 - Create: `founder-office-hours/non-tech-office-hours/moats-and-network-effects/raw/nfx-network-effects-manual.md`
 - Create (temp): `/tmp/nfx-manual.html` (raw HTML, not committed)
-- Create (temp): `/tmp/nfx-manual-parsed.json` (intermediate structured form, not committed)
 
 - [ ] **Step 1: Create the wiki directory structure**
 
@@ -451,7 +450,7 @@ curl -sL --user-agent 'Mozilla/5.0' '<tribal-url>' -o /tmp/nfx-tribal.html && \
 pandoc -f html -t gfm /tmp/nfx-tribal.html -o "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/raw/nfx-tribal-network-effects.md"
 ```
 
-Clean both files of header/footer noise the same way as Task 2.1 Step 4.
+Clean both files of header/footer noise using the same heuristic as Task 2.1 Step 6 (keep content from the first H1/H2 of the essay through the last paragraph before "Related posts" / "Subscribe" / "Comments"; preserve inline links and image alt text).
 
 - [ ] **Step 3: Commit the deep-dive essays**
 
@@ -662,7 +661,7 @@ incorrectly. The agent uses this when the founder says "we're like
 Run periodically (manual for now; automated later):
 
 1. Every concept page has all 7 required sections (Definition, Mechanism,
-   When it applies, Kill-test, AI-native erosion, Related concepts,
+   When it applies, Kill-test, AI-native erosion check, Related concepts,
    Case studies).
 2. Every example page has all 4 required sections.
 3. Every `[[wiki-link]]` resolves to an actual file.
@@ -739,7 +738,7 @@ Each page sources from the corresponding H3 section in `raw/nfx-network-effects-
 
 1. Read the H3 section for that effect in the raw manual.
 2. Extract the definition into the page's `Definition` section (plain language; rewrite if needed to remove jargon).
-3. Extract the mechanism into 2-3 bullets in the `How it actually works` section.
+3. Extract the mechanism into 2-3 bullets in the `Mechanism` section.
 4. Identify the "when it applies" conditions from the manual.
 5. **Write a Kill-test specific to this effect.** Examples:
    - For `two-sided-marketplace.md`: "Are buyers actually returning because more sellers joined, or are they returning for other reasons (e.g., habit, price)?"
@@ -1098,7 +1097,7 @@ When the founder cites a metric, ask: how did you measure that? If they did not 
 
 When the founder says "users love it," ask: which user, what did they do after the call, what would they do if it went away. Cite specifics or accept that the claim is unsupported.
 
-Pre-MVP, projection is all you have, so the peer skill works in that mode. Post-MVP, projection is a tell — they have data and are choosing to talk about hypotheticals instead.
+Pre-build, projection is all founders have. Post-MVP, projection is a tell — they have data and are choosing to talk about hypotheticals instead.
 
 ### Principle 11 — PMF before moat
 
@@ -1592,7 +1591,7 @@ Structure mirrors peer's SKILL.md but with post-MVP-specific content. Key sectio
 ```markdown
 ---
 name: post-mvp-office-hours
-description: Office-hours methodology for any founder (technical or non-technical, solo or co-founder pair) who has already shipped a product, calibrated to the AI-native era of 2026. Diagnoses where the founder actually stands on PMF via a 5-question intake that places them on a 4-segment spectrum (Searching, Approaching, Claims-PMF, Fundraise-ready), then routes the session to that segment's grilling. Harder than pre-build office hours because the founder has real data — usage, retention, revenue, churn, cohorts — or has to admit they haven't measured. For Claims-PMF and Fundraise-ready routes, runs a 10-question partner-meeting rehearsal (the investor mirror) using YC, Suster, and Bessemer canonical questions, with a counter-grill for technical founders who claim architectural uniqueness, using the AI-native cost collapse (1,000x engineers, software factories). Produces three markdown artifacts: WHERE_YOU_ARE.md (the brutal honest snapshot), WHAT_TO_DO_NEXT.md (the path forward), and (route-gated) WHAT_INVESTORS_WILL_ASK.md (the 10-question answer doc). Triggers: "I've shipped, now what", "is this PMF?", "should I raise?", "what would a partner ask me?", "post-MVP office hours". Do NOT use pre-MVP — use non-tech-office-hours or your own brainstorming first.
+description: Office hours for any founder who has shipped a product, calibrated to the AI-native era. Diagnoses PMF status via a 5-question intake that places the founder on a 4-segment spectrum (Searching, Approaching, Claims-PMF, Fundraise-ready), then routes the session accordingly. Harder than pre-build office hours because the founder has real data — usage, retention, revenue, cohorts — or must admit they haven't measured. For Claims-PMF and Fundraise-ready routes, runs a 10-question partner-meeting rehearsal (the investor mirror), with a counter-grill for technical founders who claim architectural uniqueness using the AI-native cost collapse. Produces three markdown artifacts: WHERE_YOU_ARE.md, WHAT_TO_DO_NEXT.md, and (route-gated) WHAT_INVESTORS_WILL_ASK.md. Triggers: "I've shipped, now what", "is this PMF?", "should I raise?", "what would a partner ask me?", "post-MVP office hours". Do NOT use pre-build — use a pre-build office-hours skill or your own brainstorming first.
 ---
 
 # Office Hours — post-MVP, any founder
@@ -1888,8 +1887,8 @@ for skill, required in [(peer, peer_required), (new, new_required)]:
 for skill in [peer, new]:
     concepts = list((skill / 'moats-and-network-effects/wiki/concepts').glob('*.md'))
     examples = list((skill / 'moats-and-network-effects/wiki/examples').glob('*.md'))
-    assert len(concepts) >= 20, f'{skill.name}: only {len(concepts)} concept pages, expected ≥20'
-    assert len(examples) >= 10, f'{skill.name}: only {len(examples)} example pages, expected ≥10'
+    assert len(concepts) >= 20, f'{skill.name}: only {len(concepts)} concept pages, expected >=20'
+    assert len(examples) >= 10, f'{skill.name}: only {len(examples)} example pages, expected >=10'
     print(f'{skill.name}: {len(concepts)} concepts, {len(examples)} examples')
 "
 ```
@@ -2065,8 +2064,8 @@ unzip -tq dist/non-tech-office-hours.zip > /dev/null && \
 unzip -tq dist/post-mvp-office-hours.zip > /dev/null && echo "OK" || (echo "FAIL"; exit 1)
 
 echo "=== AC7: no cross-skill references ===" && \
-! grep -rn 'post-mvp-office-hours\|post-MVP\|peer skill' non-tech-office-hours/ && \
-! grep -rn 'non-tech-office-hours\|pre-MVP' post-mvp-office-hours/ && echo "OK" || (echo "FAIL: cross-skill reference found"; exit 1)
+! grep -rn 'post-mvp-office-hours\|peer skill\|the other variant' non-tech-office-hours/ --include='*.md' && \
+! grep -rn 'non-tech-office-hours\|peer skill\|the other variant' post-mvp-office-hours/ --include='*.md' && echo "OK" || (echo "FAIL: cross-skill reference found"; exit 1)
 
 echo "=== AC8: spec and plan committed ===" && \
 git log --oneline | grep -q 'spec:' && \
@@ -2079,7 +2078,7 @@ Expected: every check prints "OK"; final line "ALL ACCEPTANCE CRITERIA MET" is p
 
 If any check fails, stop and surface the failing criterion to Adnan — do not proceed to Step 2.
 
-**Note on AC7's grep for "peer skill" and "pre-MVP" / "post-MVP" as text strings:** the strict reading of the spec is no cross-skill references. The substring "post-MVP" naturally appears in the post-mvp skill's own files (talking about itself), so that check is one-directional only (post-MVP-mention in the *non-tech* skill is the violation; post-MVP-mention in its own files is fine).
+**Note on AC7's check:** the strict reading of the spec is no cross-skill references that imply a peer exists. The substrings "post-MVP" and "pre-MVP" naturally appear in each skill's own files when talking about themselves (post-mvp skill says "post-MVP" about itself; non-tech skill may say "pre-build" about itself). Those are fine. The check therefore targets only the **literal peer folder names** and **phrasings that explicitly invoke a peer** ("peer skill", "the other variant"). The decoupling-audit Task 5.12 (Round 2 fix) is the broader, deliberately noisy check that catches subtle phrasings during build; AC7 is the strict release-time gate.
 
 - [ ] **Step 2: Commit the final state and announce completion**
 
