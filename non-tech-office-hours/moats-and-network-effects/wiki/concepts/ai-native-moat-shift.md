@@ -28,8 +28,6 @@ Of your claimed moat, how much rests on code or engineering speed (vulnerable) v
 
 This page IS the erosion check for every other moat type. For this page itself: the shift is structural and ongoing. The gap between pre-AI and post-AI defensibility widens as autonomous coding loops mature. There is no scenario in which code-as-moat recovers. Founders anchored on 2023 frames will keep over-rating their position until a well-funded challenger proves it in their market.
 
-See also: the skill's `ai-native-context.md` for the full operating substrate.
-
 ## Related concepts
 
 - [[moats]]
@@ -39,6 +37,10 @@ See also: the skill's `ai-native-context.md` for the full operating substrate.
 - [[cornered-resource]]
 - [[process-power]]
 - [[scale-economies]]
+- [[counter-positioning]]
+- [[branding]]
+- [[network-economies]]
+- [[ai-native-context]]
 
 ## Case studies
 
