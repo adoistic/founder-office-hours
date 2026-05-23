@@ -5,7 +5,7 @@
 
 ## Definition
 
-Counter-Positioning is doing something that is difficult for the incumbent you compete with to copy because copying would cannibalize their existing business. As Garry Tan defines it: "The definition of counterpositioning is doing something that is difficult for the incumbent that you are competing with to copy because it would cannibalize their business." The structural inability to respond — not merely unwillingness — is what makes it a durable power.
+Counter-Positioning is doing something that is difficult for the incumbent you compete with to copy because copying would cannibalize their existing business. As Garry Tan defines it: "The definition of [counter-positioning] is doing something that is difficult for the incumbent that you are competing with to copy because it would cannibalize their business." The structural inability to respond (not merely unwillingness) is what makes it a durable power.
 
 ## Mechanism
 

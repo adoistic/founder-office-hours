@@ -9,9 +9,9 @@ Process power is the defensibility that comes from having built something so com
 
 ## Mechanism
 
-- The gap between a demo-version-built-in-a-weekend and a production-grade system that handles mission-critical work at scale is enormous — and the last 10-20% of reliability is the defensible part.
+- The gap between a demo built in a weekend and a production system handling mission-critical work is enormous — the last 10-20% of reliability is the defensible part.
 - Domain-specific edge cases are invisible to outsiders: you cannot replicate a KYC compliance agent without first knowing what the edge cases in KYC are, and that knowledge only comes from operating at scale.
-- The process compounds: CI/CD pipelines, evals, incident playbooks, and integration surface area all accumulate into a system that is not replicable by hiring a handful of engineers.
+- The process compounds: CI/CD pipelines, evals, incident playbooks, and integration surface area accumulate into a system not replicable by hiring a handful of engineers.
 
 ## When it applies
 
@@ -25,7 +25,7 @@ Could a well-funded competitor with 1,000 engineers replicate your process in 18
 
 ## AI-native erosion check
 
-Process power is the most eroded Helmer power in the AI era. AI coding tools compress the 80% solution dramatically — a hackathon version of almost any agent is now fast to build. The moat survives only when the demo version would destroy customer value if deployed: Greenlight's bank KYC agent and Casa's loan origination system are Jared Friedman's examples. If a bank relies on the agent and it fails, they lose millions. That failure mode is what makes the process defensible. Garry Tan: "the version you build in a hackathon isn't useful to anyone." Process power requires real-world validation under mission-critical conditions, not code volume.
+Process power is the most eroded Helmer power in the AI era. AI coding tools compress the 80% solution dramatically — a hackathon version of almost any agent is now fast to build. The moat survives only when the demo version would destroy customer value if deployed. Casetext (Jake Heller's original example), Greenlight's bank KYC agent, and Casa's loan origination system are the canonical cases. If a bank relies on the agent and it fails, they lose millions. That failure mode is what makes the process defensible. Garry Tan: "the version you build in a hackathon isn't useful to anyone." Process power requires real-world validation under mission-critical conditions, not code volume.
 
 ## Related concepts
 

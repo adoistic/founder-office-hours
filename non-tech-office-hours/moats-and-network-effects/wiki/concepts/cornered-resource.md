@@ -5,7 +5,7 @@
 
 ## Definition
 
-A cornered resource is a coveted asset — patent, regulatory position, proprietary data, embedded relationship — that competitors cannot replicate at any price or within any reasonable time horizon. The classic form is a pharma patent. The AI-era form, per Garry Tan: "the corner resource doesn't have to be a diamond mine. It could be the diamond mine in your customer's heads."
+A cornered resource is a coveted asset (patent, regulatory position, proprietary data, embedded relationship) that competitors cannot replicate at any price or within any reasonable time horizon. The classic form is a pharma patent. The AI-era form, per Garry Tan: "the corner resource doesn't have to be a diamond mine. It could be the diamond mine in your customer's heads."
 
 ## Mechanism
 
@@ -15,7 +15,7 @@ A cornered resource is a coveted asset — patent, regulatory position, propriet
 
 ## When it applies
 
-- Your resource is exclusive — either legally (patent, contract) or practically (regulatory approval process, relationship depth that takes years to build).
+- Your resource is exclusive, either legally (patent, contract) or practically (regulatory approval process, relationship depth that takes years to build).
 - A competitor with 10x your funding could not acquire the same resource in two years.
 - The resource improves or compounds the longer you hold it, rather than depreciating.
 
