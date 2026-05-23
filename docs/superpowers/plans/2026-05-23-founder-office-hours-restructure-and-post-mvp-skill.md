@@ -1883,7 +1883,7 @@ for skill, required in [(peer, peer_required), (new, new_required)]:
         raise SystemExit(1)
     print(f'{skill.name}: all required files/dirs present')
 
-# Each wiki must have ≥3 concept pages and ≥1 example page (sanity floor)
+# Each wiki must have >=20 concept pages and >=10 example pages (sanity floor)
 for skill in [peer, new]:
     concepts = list((skill / 'moats-and-network-effects/wiki/concepts').glob('*.md'))
     examples = list((skill / 'moats-and-network-effects/wiki/examples').glob('*.md'))
