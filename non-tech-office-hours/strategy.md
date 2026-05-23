@@ -87,6 +87,8 @@ A good how-to-win sounds like:
 
 That level of specificity. If the founder cannot give you that, they don't have a how-to-win. They have a wish.
 
+When a strategic bet rests on a moat, name the moat type using Helmer's taxonomy (`moats-and-network-effects/wiki/concepts/`). Generic moat claims fail the strategy check; named moats with mechanisms can be tested.
+
 ### 4. Capabilities Required
 What specific capabilities must this company have to deliver on the how-to-win? Not a generic list. The ones that are *essential* and *hard to copy*.
 

@@ -241,6 +241,8 @@ When the founder gives you a how-to-win in the strategy phase, you are checking 
 
 When the founder says "we'll write more code than them" or "we have AI" — neither is on this list. Reject those answers and push for one of the above.
 
+For the full taxonomy of network effects (16 types) and the canonical moat framework (Helmer's 7 Powers), see `moats-and-network-effects/CLAUDE.md` and walk the wiki when the defensibility grill calls for it.
+
 ---
 
 ## AI's timeline-estimation weakness — Claude, this section is for you

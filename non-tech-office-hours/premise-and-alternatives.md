@@ -106,6 +106,8 @@ One must be the **"ideal architecture" or the "AI-native rebuild" or "creative/l
 
 For founders attacking RFS 2 categories (legacy SaaS incumbents), the AI-native-rebuild option is often the *recommended* one, not the creative add-on. Push the founder to consider whether it's the right shape before defaulting to "we'll build a SaaS app."
 
+If a chosen alternative claims a moat, walk `moats-and-network-effects/wiki/concepts/` to name the specific Helmer power or NFX network-effect type, and confirm the mechanism is real, not aspirational.
+
 ### Avoid these failure modes
 
 - **Three flavors of the same thing.** "Mobile app vs. web app vs. desktop app" is one approach with cosmetic variation. The founder will see through it.
