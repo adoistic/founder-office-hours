@@ -40,7 +40,8 @@ This page IS the erosion check for every other moat type. For this page itself: 
 - [[counter-positioning]]
 - [[branding]]
 - [[network-economies]]
-- [[ai-native-context]]
+
+See also: the parent skill's `ai-native-context.md` for the full AI-native operating substrate.
 
 ## Case studies
 
