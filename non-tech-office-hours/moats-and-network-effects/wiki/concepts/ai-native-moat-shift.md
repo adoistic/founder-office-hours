@@ -11,8 +11,8 @@ The structural change in which moats based on engineering effort — "we built i
 
 - LLM-assisted development delivers roughly 1,000x engineering capacity: a greenfield rebuild that took six months in 2023 takes a weekend in 2026.
 - Autonomous coding loops and agentic IDEs make software factories freely available. Code is now a commodity input, not a scarce asset.
-- What could not be replicated cheaply in 2023 now can be — except network effects (value is in the relationships, not the code), accumulated proprietary data (not copyable by running a script), distribution relationships (human trust, not engineering), regulatory positions (not code-solvable), and brand (not code-solvable).
-- The gap widens further as 1M-context models and autonomous coding loops mature. Founders who anchored on 2022–2023 defensibility frames are systematically over-rating their moat.
+- What could not be replicated cheaply in 2023 now can be. The exceptions are network effects (value lives in relationships, not code), accumulated proprietary data (not copyable by script), distribution relationships (human trust), regulatory positions, and brand — none of these are code-solvable.
+- The gap widens further as 1M-context models mature. Founders anchored on 2022–2023 defensibility frames are systematically over-rating their moat.
 
 ## When it applies
 

@@ -5,7 +5,7 @@
 
 ## Definition
 
-A moat is a durable structural advantage that protects a company's ability to earn persistent differential returns. Per Buffett: something a competitor with capital and talent cannot simply buy their way past. Per Helmer: a Power — a structural condition that both creates value and prevents competitors from replicating it.
+A moat is a structural advantage a well-funded competitor cannot simply buy or engineer their way past. It persists through a full product cycle, not just the launch window. Buffett named the concept; Helmer's 7 Powers is the canonical post-2000 framework for naming specific moat types.
 
 ## Mechanism
 

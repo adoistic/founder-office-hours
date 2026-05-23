@@ -21,11 +21,11 @@ A network effect exists when each additional user makes the product more valuabl
 
 ## Kill-test
 
-Does each new user actually increase value for existing users? If you turned off the network and left only one user, would the product still work at full value?
+Name three users currently on your network. How much more valuable did the product become for user A the day users B and C joined? If you cannot name the users and the specific mechanism, you do not have a network effect.
 
 ## AI-native erosion check
 
-Network effects are generally strengthened in the AI era. Data network effects, in particular, compound faster when ML loops can extract signal from larger datasets. The moat survives the cost-collapse. Caveat: the bar for what counts as a real network effect has risen. LLMs make it easy to build recommendation feeds and personalization systems that look like network effects but are not — they are single-player AI features. Push back hard when a founder conflates "our AI gets smarter with data" with a genuine multi-user network effect.
+Most "network effect" claims in 2026 are fake. LLM-personalized feeds, recommendation systems, and "the more you use it the better it gets" loops mimic the surface shape of a network effect without the underlying mechanism — each new user does not increase value for existing users. The bar for a real network effect has risen, even though genuine ones (especially data network effects) are if anything strengthened in the AI era. The agent's job is to apply the kill-test rigorously and refuse the fake claims.
 
 ## Related concepts
 
