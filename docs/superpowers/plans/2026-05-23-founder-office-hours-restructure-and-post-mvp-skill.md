@@ -341,45 +341,73 @@ Run:
 cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours" && mkdir -p moats-and-network-effects/raw moats-and-network-effects/wiki/concepts moats-and-network-effects/wiki/examples
 ```
 
-- [ ] **Step 2: Fetch the raw NFX manual HTML**
+- [ ] **Step 2: Confirm pandoc is installed**
 
 Run:
 ```bash
-curl -sL --user-agent 'Mozilla/5.0' 'https://www.nfx.com/post/network-effects-manual' -o /tmp/nfx-manual.html && wc -c /tmp/nfx-manual.html
+command -v pandoc || (echo "Install pandoc first: brew install pandoc (macOS) or apt-get install pandoc (Linux)"; exit 1)
 ```
-Expected: 200+ KB of HTML. If under 50KB, the request likely failed or was redirected — investigate before proceeding.
+Expected: pandoc path printed. If not installed, install it before continuing.
 
-- [ ] **Step 3: Convert HTML to clean markdown**
+- [ ] **Step 3: Fetch the raw NFX manual HTML**
 
-Use pandoc (preferred) or BeautifulSoup. Pandoc command:
+Run:
+```bash
+curl -sL --fail --user-agent 'Mozilla/5.0' 'https://www.nfx.com/post/network-effects-manual' -o /tmp/nfx-manual.html && wc -c /tmp/nfx-manual.html
+```
+Expected: 200+ KB of HTML. If under 50KB or `curl` exits non-zero, the request likely failed or was redirected.
+
+- [ ] **Step 4: Verify the fetched page is actually the canonical manual (not a redirect)**
+
+Run:
+```bash
+grep -oE '<title>[^<]+</title>' /tmp/nfx-manual.html | head -1
+```
+Expected: the title contains "Network Effects Manual" (or close — e.g., "The Network Effects Manual: 16 Network Effects"). If the title does not match, NFX has restructured — investigate by starting from `https://www.nfx.com/library` and finding the new canonical URL.
+
+- [ ] **Step 5: Convert HTML to clean markdown**
+
 ```bash
 pandoc -f html -t gfm /tmp/nfx-manual.html -o /tmp/nfx-manual-raw.md && wc -l /tmp/nfx-manual-raw.md
 ```
 Expected: 600-1200 lines of markdown.
 
-- [ ] **Step 4: Inspect and clean the markdown**
+- [ ] **Step 6: Inspect and clean the markdown**
 
-Read `/tmp/nfx-manual-raw.md`. Look for:
-- Header noise (cookie banners, nav menus) — strip
-- Footer noise (related posts, comments, subscribe boxes) — strip
-- Image references — keep the alt text + image filename in markdown, do not download the images (the wiki is text-only)
-- Inline links — preserve
+Read `/tmp/nfx-manual-raw.md`. Heuristic for cleaning:
+- **Keep:** content from the first H1/H2 matching "Network Effects" through the last paragraph before "Related posts", "Subscribe", or "Comments"
+- **Strip:** cookie banners, nav menus, social-share widgets, related-post lists, subscribe boxes, footer credits
+- **Keep:** image references (alt text + filename in markdown), do not download images (wiki is text-only)
+- **Preserve:** all inline hyperlinks
 
-Save the cleaned version to the final location:
+Save the cleaned version:
 ```bash
-# After cleaning /tmp/nfx-manual-raw.md, save it as:
 cp /tmp/nfx-manual-raw.md "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/raw/nfx-network-effects-manual.md"
 ```
 
-- [ ] **Step 5: Verify the 16 effects are all present**
+- [ ] **Step 7: Verify all 16 effects are present (per-term check)**
 
-Run:
+A simple total-line grep can pass even when an effect is missing. This iterates each effect name individually and asserts ≥1 hit:
+
 ```bash
-cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/raw" && grep -iE '(physical|protocol|personal utility|personal network|market networks|hub-and-spoke|marketplace|platform|asymptotic|expertise|data|tech performance|language|belief|bandwagon|tribal)' nfx-network-effects-manual.md | head -20
+cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/raw" && python3 -c "
+effects = [
+    'physical', 'protocol', 'personal utility', 'personal network',
+    'market network', 'hub-and-spoke', 'marketplace', 'platform',
+    'asymptotic', 'expertise', 'data network', 'tech performance',
+    'language', 'belief', 'bandwagon', 'tribal'
+]
+text = open('nfx-network-effects-manual.md').read().lower()
+missing = [e for e in effects if e not in text]
+if missing:
+    print(f'MISSING effects: {missing}')
+    raise SystemExit(1)
+print(f'All 16 effect names present.')
+"
 ```
-Expected: at least one hit per effect name (16+ unique lines).
+Expected: "All 16 effect names present." If any are missing, the scrape was incomplete or NFX has renamed effects — investigate.
 
-- [ ] **Step 6: Commit the raw NFX manual**
+- [ ] **Step 8: Commit the raw NFX manual**
 
 Run:
 ```bash
@@ -438,9 +466,18 @@ cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours" && gi
 
 **This task blocks on Adnan providing the transcript. If the transcript is not yet available, complete the rest of Chunk 2 + Chunk 3's NFX-only work, then pause for the transcript before completing Chunk 3's Helmer pages.**
 
-- [ ] **Step 1: Confirm with Adnan that the transcript is available**
+- [ ] **Step 1a: Ask Adnan for the transcript and the source video URL**
 
-Ask: "Do you have the Helmer 7 Powers YC video transcript ready? If yes, please share the file or paste contents."
+Ask verbatim:
+
+> Do you have the Helmer 7 Powers YC video transcript ready? Please share:
+> 1. The transcript file (or paste contents)
+> 2. The YouTube/source URL for the video so we can cite it
+
+- [ ] **Step 1b: Branch on availability**
+
+- **If transcript provided:** continue to Step 2 of this task.
+- **If transcript not yet ready:** mark this task as blocked. Continue with Chunk 3 Tasks 3.1–3.4 + 3.6 + 3.7 (everything except Task 3.5 which depends on the transcript). Pause Chunk 3 at Task 3.5 until the transcript arrives, then resume here at Step 2.
 
 - [ ] **Step 2: Save the transcript verbatim**
 
@@ -462,13 +499,23 @@ Ingested: 2026-05-23
 [Transcript body, verbatim]
 ```
 
-- [ ] **Step 3: Verify all 7 powers are mentioned**
+- [ ] **Step 3: Verify all 7 powers are mentioned (per-term check)**
 
-Run:
 ```bash
-cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/raw" && grep -iE 'scale economies|network economies|counter.positioning|switching costs|branding|cornered resource|process power' yc-helmer-7-powers-transcript.md | wc -l
+cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/raw" && python3 -c "
+powers = [
+    'scale economies', 'network economies', 'counter-positioning',
+    'switching costs', 'branding', 'cornered resource', 'process power'
+]
+text = open('yc-helmer-7-powers-transcript.md').read().lower()
+missing = [p for p in powers if p not in text]
+if missing:
+    print(f'MISSING powers: {missing}')
+    raise SystemExit(1)
+print('All 7 powers present.')
+"
 ```
-Expected: 7+ hits.
+Expected: "All 7 powers present." If any are missing, the transcript is incomplete or the speaker uses non-canonical phrasing — investigate before continuing.
 
 - [ ] **Step 4: Commit the transcript**
 
@@ -551,7 +598,7 @@ Every concept page MUST follow this structure exactly:
 
 <One paragraph in plain language. No jargon.>
 
-## How it actually works (mechanism)
+## Mechanism
 
 <2-3 bullets. The specific cause-and-effect that produces defensibility.>
 
@@ -710,7 +757,7 @@ Run:
 ```bash
 cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/wiki/concepts" && ls *.md | wc -l && for f in *network-effects.md *marketplace.md *platform-network-effects.md; do echo "=== $f ==="; grep -c '^## ' "$f"; done
 ```
-Expected: at least 19 files total (3 umbrellas + 16 effects), each concept page has ≥6 H2 headings.
+Expected: at least 19 files total (3 umbrellas + 16 effects), each concept page has ≥7 H2 headings (matching the 7 required sections in the CLAUDE.md template).
 
 - [ ] **Step 3: Commit the 16 NFX concept pages**
 
@@ -853,31 +900,41 @@ else:
 ```
 Expected: no broken links.
 
-- [ ] **Step 2: Verify each concept page has all 7 required sections**
+- [ ] **Step 2: Verify each concept page has all 7 required sections AND each example page has all 4 required sections**
 
 ```bash
-cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/wiki/concepts" && \
+cd "/Users/siraj/office bhours/founder-office-hours/non-tech-office-hours/moats-and-network-effects/wiki" && \
 python3 -c "
 import re
 from pathlib import Path
 
-required = ['Definition', 'How it actually works', 'When it applies', 'Kill-test', 'AI-native erosion check', 'Related concepts', 'Case studies']
+concept_required = ['Definition', 'Mechanism', 'When it applies', 'Kill-test', 'AI-native erosion check', 'Related concepts', 'Case studies']
+example_required = ['What they built', 'The mechanism', 'Why the analog often fails', 'Related examples']
+
 missing = []
-for p in Path('.').glob('*.md'):
+for p in Path('concepts').glob('*.md'):
     text = p.read_text()
-    for section in required:
-        if not re.search(rf'^## {re.escape(section)}', text, re.MULTILINE):
-            missing.append((p.name, section))
+    for section in concept_required:
+        if not re.search(rf'^## {re.escape(section)}\s*$', text, re.MULTILINE):
+            missing.append((p.name, section, 'concept'))
+for p in Path('examples').glob('*.md'):
+    text = p.read_text()
+    for section in example_required:
+        if not re.search(rf'^## {re.escape(section)}\s*$', text, re.MULTILINE):
+            missing.append((p.name, section, 'example'))
 
 if missing:
-    for name, section in missing:
-        print(f'{name} missing: {section}')
+    for name, section, kind in missing:
+        print(f'{kind}/{name} missing: {section}')
     raise SystemExit(1)
 else:
-    print('All concept pages complete.')
+    print('All concept and example pages complete.')
 "
 ```
-Expected: all concept pages complete.
+
+This also tightens the regex with `\s*$` anchors so "Kill-test" does not match "Kill-testing".
+
+Expected: "All concept and example pages complete." printed.
 
 - [ ] **Step 3: Verify word counts**
 
@@ -1106,7 +1163,40 @@ Pushback rules:
 - If they describe a pitch deck, redirect: "I'm asking about what users
   can actually use today."
 
-[similar structure for Q2-Q5; full text written during implementation]
+### Q2: Who's using it right now?
+
+Pushback rules:
+- If they say "users" or "customers" without a count, push: "How many — give me the number. If you don't know the number, that's the answer."
+- If the count is a sign-up count rather than active users, push: "How many came back this week? Last week?"
+- If they cite a segment ("SMBs", "developers"), push to a person: "Name the user who logged in yesterday. What's their job title? What did they do in the product?"
+- If they cannot name a specific user, that's a finding. They are not close enough to their users.
+
+### Q3: What's growing and what isn't?
+
+Pushback rules:
+- If they cite a growth metric (MAU, signups, revenue), push: "What's the cohort retention curve look like? Flat after some decay, or still falling?"
+- If they cannot describe the cohort curve, that is the finding. They are either not measuring it or hiding from it.
+- If they cite revenue growth without retention data, push: "Revenue growth without retention is paid acquisition burning cash. Show me the retention."
+- If they cite "engaged users," push: "Engaged how? What did the user do that counts as engagement? Why does that action matter?"
+- If something is NOT growing, push: "Why isn't that growing? What have you tried? What did the experiments tell you?"
+
+### Q4: What did the last 10 customer conversations actually sound like?
+
+Pushback rules:
+- If they cannot describe 10 conversations, push: "How many have you actually had? If under 10, that's a finding — you're not close enough to your users."
+- If they give summaries ("they liked it"), push: "Direct quotes. What did they actually say. Not what you took from it — what they said."
+- If they describe sales calls only, push: "I'm asking about discovery calls. Are you still doing those? When was the last one?"
+- If the conversations all sound similar, push: "Either you have one tight segment or you're only talking to the same kind of user. Which?"
+- If the conversations are months old, push: "What happened in the last 30 days of conversations?"
+
+### Q5: What is your runway and what would you do with $2M today?
+
+Pushback rules:
+- If the runway is unknown, push: "Find out before this session ends. A founder who doesn't know their runway is operating blind."
+- If they say "we'd hire engineers", push: "Engineers to do what specifically? Name the milestone $2M reaches that $0 doesn't."
+- If they say "we'd raise more after that", push: "Stop. What does $2M *finish*? If it doesn't finish a clear milestone, you're not ready to raise."
+- If the use-of-funds is vague ("growth"), push: "Channel by channel. Which channel takes $X to scale to what? Show me the math."
+- If they cannot name a concrete milestone $2M reaches, they are not Fundraise-ready regardless of other signals.
 
 ## The 4-segment signal table
 
@@ -1204,7 +1294,16 @@ Push-back rules:
 ### Q3: What did you build? Why this wedge?
 
 Push-back rules:
-- Reference the moats-and-network-effects wiki here only if they claim
+- If the wedge is broad ("we serve mid-market SaaS"), push: "Narrow it
+  until you can name one specific job-to-be-done in one specific
+  team in one specific company size."
+- If the wedge reasoning is "we saw an opportunity," push: "What
+  unfair advantage or non-consensus belief led you to this wedge
+  specifically — that a generalist competitor wouldn't have?"
+- If the founder retrofits the wedge ("we narrowed to X because Y
+  was working"), that's a positive signal — push to confirm the
+  narrowing is permanent or experimental.
+- Reference the moats-and-network-effects wiki only if they claim
   the wedge is moated. Walk to the specific concept page they imply.
 
 ### Q4: Show me retention. Show me cohorts.
@@ -1383,7 +1482,7 @@ The framework (Roger Martin's Playing-to-Win) is unchanged. What changes:
 3. **How to win** — the moat type must be named (link to `moats-and-network-effects/wiki/concepts/`) for Claims-PMF and Fundraise-ready routes only.
 4. **Capabilities** — the founder names what they actually have, not what they hope to have.
 5. **Management systems** — for post-MVP, this includes the cohort retention dashboard, the customer-feedback loop, the unit-economics tracker.
-6. **What-must-be-true watchlist** — gains a fifth bucket specific to post-MVP: "What evidence in the next 90 days would falsify the strategy?"
+6. **What-must-be-true watchlist** — peer skill carries 5 buckets including production economics (per spec Section 5 Phase 5). The post-MVP version keeps all 5 buckets but **changes the falsification window**: each bucket gets a "what evidence in the next 90 days would falsify this assumption?" prompt, sharpening Roger Martin's framework for a founder with real data and a finite runway. Do not add a 6th bucket — refine the existing 5.
 
 The "Strategy is not planning" hard rule from peer's SKILL.md remains the strictest enforcement standard.
 
@@ -1423,14 +1522,22 @@ Add a section at the top of the file (or amend the existing equivalent in peer) 
 ```markdown
 ## Artifact production environment
 
-- On Claude.ai: produce the artifacts via the artifacts feature. They
-  are downloadable and publishable.
-- In Claude Code or any other coding agent environment: write the
-  artifacts to disk in the current working directory. Filenames as
-  named above.
+The agent infers the environment from the tools available to it:
 
-Auto-detect: if the `Artifact` tool is available, use it. Otherwise,
-write files via the Write tool.
+- **Claude.ai web**: artifacts are produced via the artifacts UI (the
+  `<antArtifact>` markup convention). They render side-by-side, are
+  downloadable, and shareable via link.
+- **Claude Code / Codex / Cursor / any agent with file tools**: write
+  the artifacts to disk via the `Write` tool in the current working
+  directory. Filenames as named above.
+
+If neither artifact-rendering nor file-write capability is available,
+dump the artifact contents into the chat as fenced markdown blocks
+labeled with the filename — this is the worst case and the founder
+must manually copy them out.
+
+Do not duplicate the artifacts across modes (only use the most capable
+mode the environment supports).
 ```
 
 - [ ] **Step 4: Commit**
@@ -1485,7 +1592,7 @@ Structure mirrors peer's SKILL.md but with post-MVP-specific content. Key sectio
 ```markdown
 ---
 name: post-mvp-office-hours
-description: <under 1024 chars — describe: office-hours methodology for any founder who has already shipped, diagnoses where they actually stand on PMF (4-segment routing), grills harder than the pre-MVP variant because real data exists, adapts to technical or non-technical founder type with a counter-grill protocol for AI-native cost-collapse claims, produces three artifacts (WHERE_YOU_ARE.md + WHAT_TO_DO_NEXT.md + WHAT_INVESTORS_WILL_ASK.md, last gated by PMF route). Triggers: "I've shipped, now what", "is this PMF?", "should I raise?", "what would a partner ask me?", "post-MVP office hours". Do NOT use when the founder has not shipped — use non-tech-office-hours or your own brainstorming instead.>
+description: Office-hours methodology for any founder (technical or non-technical, solo or co-founder pair) who has already shipped a product, calibrated to the AI-native era of 2026. Diagnoses where the founder actually stands on PMF via a 5-question intake that places them on a 4-segment spectrum (Searching, Approaching, Claims-PMF, Fundraise-ready), then routes the session to that segment's grilling. Harder than pre-build office hours because the founder has real data — usage, retention, revenue, churn, cohorts — or has to admit they haven't measured. For Claims-PMF and Fundraise-ready routes, runs a 10-question partner-meeting rehearsal (the investor mirror) using YC, Suster, and Bessemer canonical questions, with a counter-grill for technical founders who claim architectural uniqueness, using the AI-native cost collapse (1,000x engineers, software factories). Produces three markdown artifacts: WHERE_YOU_ARE.md (the brutal honest snapshot), WHAT_TO_DO_NEXT.md (the path forward), and (route-gated) WHAT_INVESTORS_WILL_ASK.md (the 10-question answer doc). Triggers: "I've shipped, now what", "is this PMF?", "should I raise?", "what would a partner ask me?", "post-MVP office hours". Do NOT use pre-MVP — use non-tech-office-hours or your own brainstorming first.
 ---
 
 # Office Hours — post-MVP, any founder
@@ -1641,17 +1748,24 @@ cd "/Users/siraj/office bhours/founder-office-hours" && git add post-mvp-office-
 
 **Files:** all files in `founder-office-hours/post-mvp-office-hours/` and `founder-office-hours/non-tech-office-hours/`.
 
-- [ ] **Step 1: Confirm no file inside either skill references the other**
+- [ ] **Step 1: Confirm no file inside either skill references the other (broad audit)**
 
-Run:
+The literal folder-name check is necessary but insufficient. Spec Section 8 item 3 says "the agent reading either skill should be unable to tell from the skill files alone that a peer exists" — that means catching subtler phrasings too:
+
 ```bash
 cd "/Users/siraj/office bhours/founder-office-hours" && \
-echo "=== post-mvp referencing peer ===" && \
-grep -rn 'non-tech-office-hours' post-mvp-office-hours/ || echo "CLEAN" && \
-echo "=== peer referencing post-mvp ===" && \
-grep -rn 'post-mvp-office-hours' non-tech-office-hours/ || echo "CLEAN"
+echo "=== post-mvp referencing peer (literal name) ===" && \
+(grep -rn 'non-tech-office-hours' post-mvp-office-hours/ && echo "FAIL" || echo "OK") && \
+echo "=== peer referencing post-mvp (literal name) ===" && \
+(grep -rn 'post-mvp-office-hours' non-tech-office-hours/ && echo "FAIL" || echo "OK") && \
+echo "=== peer referencing post-mvp (subtler phrasings) ===" && \
+(grep -rnE 'post.MVP|pre.build founder|the other variant|the other skill|peer skill' non-tech-office-hours/ && echo "REVIEW" || echo "OK") && \
+echo "=== post-mvp referencing peer (subtler phrasings) ===" && \
+(grep -rnE 'pre.MVP|non.technical founder paired|the other variant|the other skill|peer skill' post-mvp-office-hours/ && echo "REVIEW" || echo "OK")
 ```
-Expected: both report "CLEAN" — neither skill mentions the other. If there are hits, remove the references.
+
+- "OK" = clean. "FAIL" = literal cross-reference, must remove. "REVIEW" = phrasing that might or might not be a cross-reference — read the line and decide.
+- The post-mvp skill discussing its own non-technical-vs-technical adaptive protocol is fine; the post-mvp skill saying "unlike the pre-MVP skill" is a violation.
 
 - [ ] **Step 2: Confirm each skill zip is buildable and self-contained**
 
@@ -1689,8 +1803,20 @@ Build the two release zips, validate them in a clean install, tag the release, p
 ### Task 6.1: Build the release zips
 
 **Files:**
+- Modify: `founder-office-hours/.gitignore` (add `dist/`)
 - Create: `dist/non-tech-office-hours.zip` (not committed)
 - Create: `dist/post-mvp-office-hours.zip` (not committed)
+
+- [ ] **Step 0: Ensure `dist/` is gitignored before building**
+
+Run:
+```bash
+cd "/Users/siraj/office bhours/founder-office-hours" && \
+grep -q '^dist/' .gitignore || echo 'dist/' >> .gitignore && \
+git add .gitignore && \
+git diff --cached --quiet || git commit -m "gitignore: exclude dist/ release artifacts"
+```
+Expected: either no-op (if already present) or one commit adding the rule.
 
 - [ ] **Step 1: Build both zips fresh**
 
@@ -1727,14 +1853,47 @@ ls
 ```
 Expected: two skill directories unpack cleanly.
 
-- [ ] **Step 2: Verify each unpacked skill has all expected files**
+- [ ] **Step 2: Verify each unpacked skill has the full expected file inventory**
+
+Use a Python check that asserts each required file/directory exists. Runs both skills' inventories:
 
 ```bash
-cd /tmp/skill-test && \
-echo "=== non-tech-office-hours ===" && ls non-tech-office-hours/ && \
-echo "=== post-mvp-office-hours ===" && ls post-mvp-office-hours/
+cd /tmp/skill-test && python3 -c "
+from pathlib import Path
+
+peer = Path('non-tech-office-hours')
+peer_required = [
+    'SKILL.md', 'README.md', 'ai-native-context.md', 'principles.md',
+    'forcing-questions.md', 'premise-and-alternatives.md', 'strategy.md',
+    'drafting-and-review.md', 'closing.md',
+    'moats-and-network-effects/CLAUDE.md',
+    'moats-and-network-effects/raw',
+    'moats-and-network-effects/wiki/concepts',
+    'moats-and-network-effects/wiki/examples',
+]
+new = Path('post-mvp-office-hours')
+new_required = peer_required + ['diagnostic.md', 'investor-mirror.md']
+# new skill has the same module list except no 'forcing-questions.md' name override —
+# it has its own forcing-questions.md (adapted), still named the same. So:
+# new_required is peer_required + the 2 NEW files.
+
+for skill, required in [(peer, peer_required), (new, new_required)]:
+    missing = [r for r in required if not (skill / r).exists()]
+    if missing:
+        print(f'{skill.name} MISSING: {missing}')
+        raise SystemExit(1)
+    print(f'{skill.name}: all required files/dirs present')
+
+# Each wiki must have ≥3 concept pages and ≥1 example page (sanity floor)
+for skill in [peer, new]:
+    concepts = list((skill / 'moats-and-network-effects/wiki/concepts').glob('*.md'))
+    examples = list((skill / 'moats-and-network-effects/wiki/examples').glob('*.md'))
+    assert len(concepts) >= 20, f'{skill.name}: only {len(concepts)} concept pages, expected ≥20'
+    assert len(examples) >= 10, f'{skill.name}: only {len(examples)} example pages, expected ≥10'
+    print(f'{skill.name}: {len(concepts)} concepts, {len(examples)} examples')
+"
 ```
-Expected: each has its own SKILL.md, README.md, all phase modules, and moats-and-network-effects/ subdirectory.
+Expected: all assertions pass, both skills report their wiki page counts. Failure here means a chunk earlier than this was skipped or partial.
 
 - [ ] **Step 3: Verify SKILL.md frontmatter parses for both**
 
@@ -1864,18 +2023,63 @@ Expected: 200 OK or 302 redirect chain ending in 200.
 
 **Files:** the spec at `docs/superpowers/specs/2026-05-23-founder-office-hours-restructure-and-post-mvp-skill-design.md`
 
-- [ ] **Step 1: Walk through the spec's Section 13 acceptance criteria**
+- [ ] **Step 1: Walk through the spec's Section 13 acceptance criteria with active verification**
 
-For each of the 8 criteria, verify and check off:
+Each criterion runs a live check, not a backreference:
 
-1. GitHub repo renamed to `founder-office-hours` — ✓ (Chunk 1 Task 1.5)
-2. Existing skill fully functional from new subfolder location with 3 cross-ref edits — ✓ (Chunk 1 Task 1.4, Chunk 3 Task 3.7)
-3. New post-mvp-office-hours/ skill fully populated per Sections 4-6 — ✓ (Chunk 5)
-4. Both copies of moats-and-network-effects/ exist with raw/, wiki/concepts/, wiki/examples/, CLAUDE.md — ✓ (Chunks 2, 3, 4)
-5. Top-level README explains both skills and lists all acknowledgments — ✓ (Chunk 1 Task 1.3)
-6. Two release zips buildable and each is functional — ✓ (Chunk 6 Tasks 6.1, 6.2)
-7. No file inside either skill references the peer skill — ✓ (Chunk 5 Task 5.12)
-8. Spec review loop has approved this design and user has reviewed — ✓ (already done before plan was written)
+```bash
+cd "/Users/siraj/office bhours/founder-office-hours" && \
+echo "=== AC1: repo renamed ===" && \
+gh repo view --json name -q .name | grep -q '^founder-office-hours$' && echo "OK" || (echo "FAIL"; exit 1)
+
+echo "=== AC2: peer skill cross-refs in place ===" && \
+grep -q 'moats-and-network-effects' non-tech-office-hours/ai-native-context.md && \
+grep -q 'moats-and-network-effects' non-tech-office-hours/strategy.md && \
+grep -q 'moats-and-network-effects' non-tech-office-hours/premise-and-alternatives.md && echo "OK" || (echo "FAIL"; exit 1)
+
+echo "=== AC3: new skill fully populated ===" && \
+for f in SKILL.md README.md ai-native-context.md principles.md diagnostic.md forcing-questions.md premise-and-alternatives.md strategy.md investor-mirror.md drafting-and-review.md closing.md; do
+    test -f "post-mvp-office-hours/$f" || (echo "FAIL: missing post-mvp-office-hours/$f"; exit 1)
+done; echo "OK"
+
+echo "=== AC4: both wiki copies exist with full structure ===" && \
+for skill in non-tech-office-hours post-mvp-office-hours; do
+    test -f "$skill/moats-and-network-effects/CLAUDE.md" && \
+    test -d "$skill/moats-and-network-effects/raw" && \
+    test -d "$skill/moats-and-network-effects/wiki/concepts" && \
+    test -d "$skill/moats-and-network-effects/wiki/examples" || (echo "FAIL: $skill wiki incomplete"; exit 1)
+done; echo "OK"
+
+echo "=== AC5: top-level README has both skills and acknowledgments ===" && \
+grep -q 'non-tech-office-hours' README.md && \
+grep -q 'post-mvp-office-hours' README.md && \
+grep -q 'Garry Tan' README.md && \
+grep -q 'Hamilton Helmer' README.md && \
+grep -q 'NFX' README.md && \
+grep -q 'Roger Martin' README.md && echo "OK" || (echo "FAIL"; exit 1)
+
+echo "=== AC6: both zips buildable and functional ===" && \
+test -f dist/non-tech-office-hours.zip && \
+test -f dist/post-mvp-office-hours.zip && \
+unzip -tq dist/non-tech-office-hours.zip > /dev/null && \
+unzip -tq dist/post-mvp-office-hours.zip > /dev/null && echo "OK" || (echo "FAIL"; exit 1)
+
+echo "=== AC7: no cross-skill references ===" && \
+! grep -rn 'post-mvp-office-hours\|post-MVP\|peer skill' non-tech-office-hours/ && \
+! grep -rn 'non-tech-office-hours\|pre-MVP' post-mvp-office-hours/ && echo "OK" || (echo "FAIL: cross-skill reference found"; exit 1)
+
+echo "=== AC8: spec and plan committed ===" && \
+git log --oneline | grep -q 'spec:' && \
+git log --oneline | grep -q 'plan:' && echo "OK" || (echo "FAIL"; exit 1)
+
+echo "=== ALL ACCEPTANCE CRITERIA MET ==="
+```
+
+Expected: every check prints "OK"; final line "ALL ACCEPTANCE CRITERIA MET" is printed.
+
+If any check fails, stop and surface the failing criterion to Adnan — do not proceed to Step 2.
+
+**Note on AC7's grep for "peer skill" and "pre-MVP" / "post-MVP" as text strings:** the strict reading of the spec is no cross-skill references. The substring "post-MVP" naturally appears in the post-mvp skill's own files (talking about itself), so that check is one-directional only (post-MVP-mention in the *non-tech* skill is the violation; post-MVP-mention in its own files is fine).
 
 - [ ] **Step 2: Commit the final state and announce completion**
 
